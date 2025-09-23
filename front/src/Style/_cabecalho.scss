@@ -1,0 +1,15 @@
+@use './_variaveis.scss' as *;
+
+.cabecalho{
+    background-color: $primary;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+
+    h1{
+        color: $background;
+        margin: 10px 0 10px 10px;
+        font-size: 2rem;
+        font-family: $font-primary;
+    }
+}

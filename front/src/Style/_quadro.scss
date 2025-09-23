@@ -1,0 +1,29 @@
+@use './variaveis.scss' as *;
+
+.container{
+    max-width: 1440px;
+    margin: 50px auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background-color: $forms;
+    border-radius: 18px;
+
+    h1{
+        display: flex;
+        font-size: 1.7rem;
+        color: $primary;
+        justify-content: center;
+        font-family: $font-primary;
+        margin: 10px 0;
+    }
+}
+
+.atividades {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+

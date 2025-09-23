@@ -1,0 +1,24 @@
+$background: #f4f7f9;
+$primary: #1a2b3c;
+$secondary: #7c8c9a;
+$accent: #00647a;
+$text-dark: $primary;
+$text-light: #dbdada;
+$button: #004352;
+$borda-erredondada: 10px;
+$forms: #a9bac9;
+
+$text-primary: $background;
+$text-background: $primary;
+$font-primary: "Verdana";
+$font-size: 16px;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: $background;
+}

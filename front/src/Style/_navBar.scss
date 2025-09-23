@@ -1,0 +1,41 @@
+@use './variaveis' as *;
+
+.barra{
+    background-color: $accent;
+    color: $text-primary;
+    height: 40px;
+    margin: 0;
+
+    ul{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-right: 20px;
+        font-size: 18px;
+        gap: 30px;
+        align-self: center;
+        padding: 10px;
+        align-items: center;
+    }
+
+    li{
+        text-decoration: none;
+        list-style: none;
+        font-size: 1rem;
+        font-family: $font-primary;
+    }
+
+    a{
+        text-decoration: none;
+        color: $text-primary;
+
+        a:hover{
+            color: $accent;
+        }
+
+        a:active{
+            font-weight: bold;
+        }
+    }
+
+}
