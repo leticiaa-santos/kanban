@@ -3,7 +3,6 @@ import axios from 'axios'; //é o hook que faz a comunicação com a internet (H
 import { useForm } from 'react-hook-form'; // Hook (use) prmite a validação de formulários
 import { z } from 'zod'; //descrição de como validar, quais são as regras
 import { zodResolver } from '@hookform/resolvers/zod'; //é o que liga o hook form com o zod
-import { useNavigate } from 'react-router-dom'; 
 
 //validação de formulário - usando as regras do zod
 const schemaCadUsuario = z.object({
@@ -27,8 +26,6 @@ const schemaCadUsuario = z.object({
  
  
 export function CadUsuario(){
-
-    const navigate = useNavigate();
 
     const {
         register, // registra o que o usuário faz
@@ -67,7 +64,6 @@ export function CadUsuario(){
             await axios.post("http://127.0.0.1:8000/api/usuario/", data);
             alert("Usuário cadastrado com sucesso");
             reset(); // limpar o formulário após o cadastro
-            navigate('/')
         } catch (error) {
             alert("Éeee, não rolou, na proxima talvez")
             console.log("Erros", error)
@@ -78,19 +74,21 @@ export function CadUsuario(){
         <form className="formularios" onSubmit={handleSubmit(obterDados)}>
             <h2>Cadastro do Usuário</h2>
  
-            <label>Nome:</label>
+            <label htmlFor='nome'>Nome:</label>
             <input 
                 type='text' 
                 placeholder='Jose da Silva' 
+                id='nome'
                 {...register("nome")} 
                 onChange={handleNomeChange}/>
             {/*Vejo a variável errors no campo e exibo a mensagem para o usuário*/}
             {errors.nome  && <p>{errors.nome.message}</p>}
  
-            <label>E-mail:</label>
+            <label htmlFor='email'>E-mail:</label>
             <input 
                 type='email' 
                 placeholder='email@email.com' 
+                id='email'
                 {...register("email")} 
                 onChange={handleEmailChange}/>
             {errors.email && <p>{errors.email.message}</p>}
