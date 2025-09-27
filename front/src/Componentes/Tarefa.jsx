@@ -57,6 +57,7 @@ export function Tarefa({ tarefa }){
             {...listeners}
             {...attributes}
             className={isDragging ? "dragging" : ""}
+            tabIndex={0}
             >
                 <h3 id={`tarefa: ${tarefa.id}`}>{tarefa.descricao}</h3>
                 <img src={drag} alt="icone que permite arrastar a tarefa para outra coluna" />
