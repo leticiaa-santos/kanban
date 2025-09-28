@@ -2,20 +2,23 @@ import { Link } from "react-router-dom";
 
 export function NavBar () {
     return(
-        <nav className="barra">
+        <nav className="barra" role="navigation" aria-label="Menu Principal">
             <ul>
-                <Link to = '/cadUsuario'>
-                    <li>Cadastro de Usuário</li>
-                </Link>
-
-                <Link to = '/cadTarefa'>
-                    <li>Cadastro de Tarefas</li>
-                </Link>
-                
-                <Link to = '/'>
-                    <li>Gerenciamento de Tarefas</li>
-                </Link>
-                
+                <li>
+                    <Link to = '/cadUsuario'>
+                        Cadastro de Usuário
+                    </Link>
+                </li>
+                <li>
+                    <Link to = '/cadTarefa'>
+                        Cadastro de Tarefas 
+                    </Link>
+                </li>
+                <li>
+                    <Link to = '/'>
+                        Gerenciamento de Tarefas
+                    </Link>
+                </li>
             </ul>
         </nav>
     );

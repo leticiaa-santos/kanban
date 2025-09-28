@@ -28,6 +28,28 @@
         cursor: grabbing; // mão fechada enquanto arrasta
     }
 
+    .drag {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: grab;
+      flex-shrink: 0;
+      transition: background 0.2s ease;
+
+      &:hover {
+        scale: 1.2;
+      }
+
+      &:active {
+        cursor: grabbing;
+        background: rgba($secondary, 0.9);
+      }
+    }
+  
+
     h3 {
         font-size: 1.2rem;
         color: $accent;

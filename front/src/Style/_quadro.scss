@@ -1,7 +1,7 @@
 @use './variaveis.scss' as *;
 
-.container{
-    max-width: 1440px;
+.container {
+    max-width: 1340px;
     margin: 50px auto;
     padding: 10px;
     display: flex;
@@ -10,11 +10,11 @@
     background-color: $forms;
     border-radius: 18px;
 
-    h1{
-        display: flex;
+    h1 {
         font-size: 1.7rem;
         color: $primary;
         justify-content: center;
+        text-align: center;
         font-family: $font-primary;
         margin: 10px 0;
     }
@@ -22,8 +22,8 @@
 
 .atividades {
     display: flex;
-    justify-content: center;
+    justify-content: center;  // Colunas começam do topo
     flex-wrap: wrap;
     gap: 1.5rem;
+    align-items: flex-start; // Colunas vazias não se esticam
 }
-

@@ -5,56 +5,57 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-//schema de validação de edição de tarefas
-
+// Schema de validação de edição de tarefas
 const schemaEditarTarefas = z.object({
-    prioridade: z.enum(['baixa', 'media', 'alta'], {
-        errorMap: () => ({message: "Escolha uma prioridade"})
+    prioridade: z.enum(["baixa", "media", "alta"], {
+        errorMap: () => ({ message: "Escolha uma prioridade válida" }),
     }),
-    status: z.enum(['a fazer', 'fazendo', 'feito'],{
-        errorMap: () => ({message: "Escolha o status da tarefa"}),
-    })
-})
+    status: z.enum(["a fazer", "fazendo", "feito"], {
+        errorMap: () => ({ message: "Escolha um status válido" }),
+    }),
+});
 
-export function EditarTarefa () {
-    const { id } = useParams(); //pega o ID que foi passado na rota
+export function EditarTarefa() {
+    const { id } = useParams();
     const [tarefa, setTarefa] = useState(null);
     const navigate = useNavigate();
 
-    const{
+    const {
         register,
         handleSubmit,
-        formState: {errors},
+        formState: { errors },
         reset,
-    } = useForm({resolver: zodResolver(schemaEditarTarefas)});
+    } = useForm({
+        resolver: zodResolver(schemaEditarTarefas),
+        mode: "onChange",
+    });
 
     useEffect(() => {
-        axios
+        async function buscarTarefa() {
+            try {
+                const res = await axios.get(`http://127.0.0.1:8000/api/tarefa/${id}/`);
+                setTarefa(res.data);
 
-        .get(`http://127.0.0.1:8000/api/tarefa/${id}/`)
+                reset({
+                    prioridade: res.data.prioridade,
+                    status: res.data.status,
+                });
+            } catch (err) {
+                console.error("Erro ao buscar tarefa", err);
+            }
+        }
 
-        .then((res) => {
-            console.log(res)
-            setTarefa(res.data);
-            reset({
-                prioridade:res.data.prioridade,
-                status: res.data.status,
-            });
-        })
-
-        .catch ((err) => console.error("Erro ao buscar tarefa", err))       
-
+        buscarTarefa();
     }, [id, reset]);
 
     async function salvarEdicao(data) {
-        try{
+        try {
             await axios.patch(`http://127.0.0.1:8000/api/tarefa/${id}/`, data);
-            console.log("Os dados foram: ", data);
-            alert("Tarefa atualizada com sucesso")
-            navigate('/')
+            alert("Tarefa atualizada com sucesso!");
+            navigate("/");
         } catch (err) {
-            console.error("Algo deu errado", err);
-            alert("Houve um erro ao editar a tarefa")
+            console.error("Erro ao editar tarefa", err);
+            alert("Houve um erro ao editar a tarefa");
         }
     }
 
@@ -62,41 +63,66 @@ export function EditarTarefa () {
         return <p>Carregando tarefa...</p>;
     }
 
-    return(
+    return (
         <section>
-            
-
-            <form className='formularios' onSubmit={handleSubmit(salvarEdicao)}>
+            <form className="formularios" onSubmit={handleSubmit(salvarEdicao)}>
                 <h2>Editar Tarefa</h2>
-                
-                <label>Descrição:</label>
-                <textarea value={tarefa.descricao} readOnly/>
 
-                <label>Setor</label>
-                <input type='text' value = {tarefa.nomeSetor} readOnly />
+                <label htmlFor="descricao">Descrição:</label>
+                <textarea
+                    id="descricao"
+                    value={tarefa.descricao}
+                    readOnly
+                    aria-readonly="true"
+                />
 
-                <label>Prioridade:</label>
-                <select {...register("prioridade")}>
-                    <option value="">Selecione</option>
+                <label htmlFor="setor">Setor:</label>
+                <input
+                    id="setor"
+                    type="text"
+                    value={tarefa.nomeSetor}
+                    readOnly
+                    aria-readonly="true"
+                />
+
+                <label htmlFor="prioridade">Prioridade:</label>
+                <select
+                    id="prioridade"
+                    {...register("prioridade")}
+                    aria-invalid={errors.prioridade ? "true" : "false"}
+                    aria-describedby={errors.prioridade ? "prioridade-erro" : undefined}
+                    defaultValue={tarefa.prioridade}
+                >
                     <option value="baixa">Baixa</option>
                     <option value="media">Média</option>
                     <option value="alta">Alta</option>
                 </select>
-                {errors.prioridade && <p>{errors.prioridade.message}</p>}
+                {errors.prioridade && (
+                    <p id="prioridade-erro" className="errors">
+                        {errors.prioridade.message}
+                    </p>
+                )}
 
-                <label>Status:</label>
-                <select {...register("status")}>
-                    <option value="">Selecione</option>
+                <label htmlFor="status">Status:</label>
+                <select
+                    id="status"
+                    {...register("status")}
+                    aria-invalid={errors.status ? "true" : "false"}
+                    aria-describedby={errors.status ? "status-erro" : undefined}
+                    defaultValue={tarefa.status}
+                >
                     <option value="a fazer">A fazer</option>
                     <option value="fazendo">Fazendo</option>
                     <option value="feito">Feito</option>
                 </select>
-                {errors.status && <p>{errors.status.message}</p>}
+                {errors.status && (
+                    <p id="status-erro" className="errors">
+                        {errors.status.message}
+                    </p>
+                )}
 
-                <button type='submit'>Editar</button>
+                <button type="submit">Editar</button>
             </form>
         </section>
     );
-
-
 }
