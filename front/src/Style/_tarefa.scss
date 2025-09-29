@@ -63,24 +63,21 @@
     }
 
     dl {
-        // Lista de descrição e dados da tarefa
         margin: 0 0 1rem 0;
-        display: flex;
-        flex-direction: column;
-
+        display: grid;
+        grid-template-columns: auto 1fr; // primeira coluna (dt) só o necessário, segunda (dd) ocupa o resto
+        row-gap: .4rem; // espaço entre linhas
+        column-gap: .5rem; // espaço entre dt e dd
 
         dt {
-            // Termo em negrito inline com margem
             font-weight: bold;
-            display: flex;
-            flex-direction: row;
-            margin-right: .3rem;
+            color: #333;
+            margin: 0;
         }
 
         dd {
-            // Definição inline com margem direita
-            
-            margin: 0 .8rem 0 0;
+            margin: 0;
+            color: #555;
         }
     }
 

@@ -41,7 +41,7 @@ export function Quadro() {
         // Contexto para drag-and-drop com restrição de scroll
         <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToFirstScrollableAncestor]}>
             <main className="container">
-                <h1 id="quadro-titulo">Meu Quadro</h1>
+                <h1 id="quadro-titulo">Minhas Tarefas</h1>
                 
                 {/* Seção com as colunas de tarefas */}
                 <section className="atividades" role="region" aria-labelledby="quadro-titulo">

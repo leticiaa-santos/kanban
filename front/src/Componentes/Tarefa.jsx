@@ -77,6 +77,9 @@ export function Tarefa({ tarefa }) {
                 <dt>Prioridade:</dt>
                 <dd>{tarefa.prioridade}</dd>
 
+                <dt>Responsável:</dt>
+                <dd>{tarefa.responsavel || "Não atribuído"}</dd>
+
             </dl>  
 
             {/* Botões para editar e excluir */}

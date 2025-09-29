@@ -62,6 +62,13 @@ export function CadTarefa() {
         buscarUsuario();
     }, []);
 
+    // Mostrar alerta só quando sucesso mudar
+    useEffect(() => {
+        if (sucesso) {
+            alert("Tarefa cadastrada com sucesso");
+        }
+    }, [sucesso]);
+
     async function obterDados(data) {
         setServerError("");
         setSucesso(false);
@@ -191,10 +198,6 @@ export function CadTarefa() {
                 <p role="alert" className="erro-server">{serverError}</p>
             )}
 
-            {/* Mensagem de sucesso */}
-            {sucesso && (
-                alert("Tarefa cadastrada com sucesso")
-            )}
         </form>
     );
 }

@@ -2,7 +2,7 @@ import axios from 'axios'; // Biblioteca para requisições HTTP
 import { useForm } from 'react-hook-form'; // Hook para manipulação e validação de formulários
 import { z } from 'zod'; // Definição de regras de validação
 import { zodResolver } from '@hookform/resolvers/zod'; // Integração entre react-hook-form e zod
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 // Esquema de validação do formulário com Zod
@@ -65,6 +65,13 @@ export function CadUsuario(){
         if (valor.length > 40) valor = valor.slice(0, 40); // máximo 40 chars
         setValue("email", valor);
     };
+
+    // Mostrar alerta só quando sucesso mudar
+    useEffect(() => {
+        if (sucesso) {
+            alert("Usuário cadastrado com sucesso");
+        }
+    }, [sucesso]);
 
     // Função para submissão do formulário
     async function obterDados(data) {
@@ -135,13 +142,6 @@ export function CadUsuario(){
                 <p role="alert" className="erro-server">{serverError}</p>
             )}
 
-            {/* Mensagem de sucesso (mais acessível) */}
-            {sucesso && (
-                <p role="status" className="sucesso-msg">
-                Usuário cadastrado com sucesso!
-                </p>
-                
-            )}
  
         </form>
     )
