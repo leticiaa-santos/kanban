@@ -7,6 +7,7 @@ class UsuarioSerializar(serializers.ModelSerializer):
         fields = '__all__'
 
 class TarefaSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Tarefa
         fields = '__all__'

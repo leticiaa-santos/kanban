@@ -20,8 +20,8 @@ class Usuario(models.Model):
         return self.nome
     
 class Tarefa(models.Model):
-    descricao = models.TextField(max_length=255)
-    nomeSetor = models.CharField(max_length=90)
+    descricao = models.TextField(max_length=50)
+    nomeSetor = models.CharField(max_length=20)
     prioridade = models.CharField(max_length=5, choices=PRIORIDADE_CHOICES)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='a fazer')
     data_cadastro = models.DateField(auto_now_add=True)

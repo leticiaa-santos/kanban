@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-// Schema de validação de edição de tarefas
+// Validação do formulário com zod
 const schemaEditarTarefas = z.object({
     prioridade: z.enum(["baixa", "media", "alta"], {
         errorMap: () => ({ message: "Escolha uma prioridade válida" }),
@@ -16,10 +16,11 @@ const schemaEditarTarefas = z.object({
 });
 
 export function EditarTarefa() {
-    const { id } = useParams();
-    const [tarefa, setTarefa] = useState(null);
+    const { id } = useParams();              // Pega o ID da tarefa pela URL
+    const [tarefa, setTarefa] = useState(null); // Estado para armazenar a tarefa
     const navigate = useNavigate();
 
+    // Configura react-hook-form com validação zod
     const {
         register,
         handleSubmit,
@@ -30,12 +31,14 @@ export function EditarTarefa() {
         mode: "onChange",
     });
 
+    // Busca a tarefa na API ao carregar o componente
     useEffect(() => {
         async function buscarTarefa() {
             try {
                 const res = await axios.get(`http://127.0.0.1:8000/api/tarefa/${id}/`);
                 setTarefa(res.data);
 
+                // Preenche o formulário com os dados da tarefa
                 reset({
                     prioridade: res.data.prioridade,
                     status: res.data.status,
@@ -48,6 +51,7 @@ export function EditarTarefa() {
         buscarTarefa();
     }, [id, reset]);
 
+    // Envia as alterações para a API e navega para a home
     async function salvarEdicao(data) {
         try {
             await axios.patch(`http://127.0.0.1:8000/api/tarefa/${id}/`, data);
@@ -59,6 +63,7 @@ export function EditarTarefa() {
         }
     }
 
+    // Exibe mensagem enquanto carrega tarefa
     if (!tarefa) {
         return <p>Carregando tarefa...</p>;
     }
@@ -68,6 +73,7 @@ export function EditarTarefa() {
             <form className="formularios" onSubmit={handleSubmit(salvarEdicao)}>
                 <h2>Editar Tarefa</h2>
 
+                {/* Campos somente leitura */}
                 <label htmlFor="descricao">Descrição:</label>
                 <textarea
                     id="descricao"
@@ -85,6 +91,7 @@ export function EditarTarefa() {
                     aria-readonly="true"
                 />
 
+                {/* Campo prioridade com validação */}
                 <label htmlFor="prioridade">Prioridade:</label>
                 <select
                     id="prioridade"
@@ -103,6 +110,7 @@ export function EditarTarefa() {
                     </p>
                 )}
 
+                {/* Campo status com validação */}
                 <label htmlFor="status">Status:</label>
                 <select
                     id="status"

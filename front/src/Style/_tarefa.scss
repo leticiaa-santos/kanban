@@ -2,6 +2,7 @@
 @use "sass:color";
 
 .tarefa {
+    // Base styles for task container
     background: $background;
     border: 1px solid $secondary;
     border-radius: $borda-erredondada;
@@ -13,70 +14,84 @@
     transition: transform .2s ease;
 
     &:hover {
+        // Eleva a tarefa ao passar o mouse
         transform: translateY(-2px);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
 
     header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 0 .8rem 0;
-    cursor: grab; // mão aberta por padrão
+        // Cabeçalho com flex para alinhamento e cursor de arrastar
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 0 .8rem 0;
+        cursor: grab;
 
-    &.dragging {
-        cursor: grabbing; // mão fechada enquanto arrasta
+        &.dragging {
+            // Cursor enquanto arrasta
+            cursor: grabbing;
+        }
+
+        .drag {
+            // Ícone de arrastar estilizado
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: grab;
+            flex-shrink: 0;
+            transition: background 0.2s ease;
+
+            &:hover {
+                scale: 1.2;
+            }
+
+            &:active {
+                cursor: grabbing;
+                background: rgba($secondary, 0.9);
+            }
+        }
+    
+
+        h3 {
+            // Título da tarefa com cor de destaque
+            font-size: 1.2rem;
+            color: $accent;
+        }
     }
-
-    .drag {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      cursor: grab;
-      flex-shrink: 0;
-      transition: background 0.2s ease;
-
-      &:hover {
-        scale: 1.2;
-      }
-
-      &:active {
-        cursor: grabbing;
-        background: rgba($secondary, 0.9);
-      }
-    }
-  
-
-    h3 {
-        font-size: 1.2rem;
-        color: $accent;
-    }
-}
 
     dl {
+        // Lista de descrição e dados da tarefa
         margin: 0 0 1rem 0;
+        display: flex;
+        flex-direction: column;
+
 
         dt {
+            // Termo em negrito inline com margem
             font-weight: bold;
-            display: inline;
+            display: flex;
+            flex-direction: row;
             margin-right: .3rem;
         }
 
         dd {
-            display: inline;
+            // Definição inline com margem direita
+            
             margin: 0 .8rem 0 0;
         }
     }
 
     &_acoes {
+        // Container dos botões de ação com espaçamento
         display: flex;
         gap: .5rem;
         margin-bottom: 1rem;
 
         button {
+            // Botões com cor, arredondamento e transições
             background: $button;
             border: none;
             border-radius: $borda-erredondada;
@@ -89,6 +104,7 @@
 
             &:hover,
             &:focus {
+                // Efeito ao passar mouse ou focar
                 background: color.adjust($accent, $lightness: 10%);
                 transform: scale(1.05);
                 outline: 2px solid $accent;
@@ -97,16 +113,19 @@
     }
 
     &_status {
+        // Área do seletor de status e botão
         display: flex;
         align-items: center;
         gap: .5rem;
 
         label {
+            // Label em negrito com tamanho menor
             font-weight: bold;
             font-size: .9rem;
         }
 
         select {
+            // Estilo do select com padding, borda e cores
             padding: .4rem;
             border-radius: $borda-erredondada;
             border: 1px, solid $secondary;
@@ -115,11 +134,13 @@
             color: $text-dark;
 
             &:focus {
+                // Destaque ao focar no select
                 outline: 2px solid $accent;
             }
         }
 
         button {
+            // Botão para alteração de status com estilo similar
             background: $button;
             color: $text-light;
             border: none;
@@ -131,6 +152,7 @@
 
             &:hover,
             &:focus {
+                // Efeito hover/foco no botão
                 background: color.adjust($accent, $lightness: 10%);
                 transform: scale(1.05);
                 outline: 2px solid $accent;

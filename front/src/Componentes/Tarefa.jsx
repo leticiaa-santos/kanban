@@ -6,22 +6,25 @@ import drag from '../assets/drag.png';
 
 export function Tarefa({ tarefa }) {
     const navigate = useNavigate();
-    const [status, setStatus] = useState(tarefa.status || "");
+    const [status, setStatus] = useState(tarefa.status || ""); // Estado para o status da tarefa
 
+    // Hook para tornar a tarefa arrastável
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
         id: tarefa.id,
     });
 
+    // Estilo para o movimento do drag
     const style = transform
         ? { transform: `translate(${transform.x}px, ${transform.y}px)` }
         : undefined;
 
+    // Função para excluir tarefa 
     async function excluirTarefa(id) {
         if (confirm("Tem certeza mesmo que quer excluir?")) {
             try {
                 await axios.delete(`http://127.0.0.1:8000/api/tarefa/${id}/`);
                 alert("Tarefa excluída com sucesso");
-                window.location.reload();
+                window.location.reload(); // Recarrega página após exclusão
             } catch (error) {
                 console.error("Erro ao excluir a tarefa", error);
                 alert("Erro ao excluir");
@@ -29,6 +32,7 @@ export function Tarefa({ tarefa }) {
         }
     }
 
+    // Função para alterar status da tarefa via formulário
     async function alterarStatus(event) {
         event.preventDefault();
         try {
@@ -36,7 +40,7 @@ export function Tarefa({ tarefa }) {
                 status: status,
             });
             alert("Status alterado com sucesso!");
-            window.location.reload();
+            window.location.reload(); // Recarrega página após alteração
         } catch (error) {
             console.error("Erro ao alterar status:", error);
             alert("Erro ao alterar status.");
@@ -46,14 +50,14 @@ export function Tarefa({ tarefa }) {
     return (
         <article 
             className="tarefa" 
-            ref={setNodeRef} 
-            style={style} 
+            ref={setNodeRef}               // Ref para drag-and-drop
+            style={style}                  // Aplica transformação durante drag
             role="listitem"
             aria-label={`Tarefa: ${tarefa.descricao}. Arrastável.`}
         >
             <header
-                {...listeners}
-                {...attributes}
+                {...listeners}             // Eventos de drag
+                {...attributes}            // Atributos de acessibilidade para drag
                 className={isDragging ? "dragging" : ""}
                 tabIndex={0}
                 aria-label={`Tarefa: ${tarefa.descricao}. Arraste para mudar de coluna.`}
@@ -65,14 +69,17 @@ export function Tarefa({ tarefa }) {
                 />
             </header>
 
+            {/* Informações da tarefa */}
             <dl>
                 <dt>Setor:</dt>
                 <dd>{tarefa.nomeSetor}</dd>
 
                 <dt>Prioridade:</dt>
                 <dd>{tarefa.prioridade}</dd>
+
             </dl>  
 
+            {/* Botões para editar e excluir */}
             <div className='tarefa_acoes'>
                 <button 
                     type='button' 
@@ -91,6 +98,7 @@ export function Tarefa({ tarefa }) {
                 </button>
             </div> 
 
+            {/* Formulário para alterar status */}
             <form className='tarefa_status' onSubmit={alterarStatus}>
                 <label htmlFor={`status-${tarefa.id}`}>Status:</label>
                 <select

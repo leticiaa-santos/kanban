@@ -12,12 +12,12 @@ const schemaCadTarefa = z.object({
     descricao: z.string()
         .trim()
         .min(5, { message: 'Insira ao menos 5 caracteres' })
-        .max(255, { message: 'Insira até 255 caracteres' }),
+        .max(50, { message: 'Insira até 50 caracteres' }),
 
     nomeSetor: z.string()
         .trim()
         .min(1, { message: 'Insira ao menos 1 caractere' })
-        .max(90, { message: 'Insira até 90 caracteres' })
+        .max(20, { message: 'Insira até 20 caracteres' })
         .regex(/^[^0-9]*$/, { message: "Este campo não pode conter números" }),
 
     prioridade: z.enum(PRIORIDADE_CHOICES, {
@@ -193,9 +193,7 @@ export function CadTarefa() {
 
             {/* Mensagem de sucesso */}
             {sucesso && (
-                <p role="status" className="sucesso-msg">
-                    Tarefa cadastrada com sucesso!
-                </p>
+                alert("Tarefa cadastrada com sucesso")
             )}
         </form>
     );
