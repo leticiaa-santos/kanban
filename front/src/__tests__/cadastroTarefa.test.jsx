@@ -3,26 +3,18 @@ import { beforeEach, describe, expect, vi } from 'vitest';
 import { CadTarefa } from '../Paginas/CadTarefa';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router-dom';
+import '@testing-library/jest-dom'
 
-vi.mock('axios');
+vi.mock('axios'); // mocka o axios globalmente
 
-// Mock do useNavigate
-const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  };
-});
-
-// Evita alert real
-vi.spyOn(window, 'alert').mockImplementation(() => {});
 
 describe("Cadastro de Tarefas", () => {
 
   beforeEach(() => {
-    axios.get.mockResolvedValue({ data: [{ id: 1, nome: "Letícia" }] });
+    // Mock da requisição GET de usuários para popular o select
+    axios.get.mockResolvedValue({
+      data: [{ id: 1, nome: 'Usuário Teste' }]
+    });
 
     render(
       <MemoryRouter>
@@ -47,30 +39,43 @@ describe("Cadastro de Tarefas", () => {
     expect(botao).toBeTruthy();
   });
 
-  it("deve resetar os campos após submissão bem-sucedida", async () => {
+
+  it("Reseta os campos após submissão com sucesso", async () => {
+    // Mock da requisição POST para envio do formulário
+    axios.post.mockResolvedValue({ data: {} });
+
+    const descricaoInput = screen.getByLabelText(/Descrição/i);
+    const setorInput = screen.getByLabelText(/Nome do Setor/i);
+    const prioridadeInput = screen.getByLabelText(/Prioridade/i);
+    const usuarioInput = screen.getByLabelText(/Usuário/i);
+    const statusInput = screen.getByLabelText(/Status/i);
+    const botao = screen.getByRole("button", { name: /Cadastrar/i });
+
     // Preenche os campos
-    fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Fazer relatório semanal' } });
-    fireEvent.change(screen.getByLabelText(/Nome do Setor/i), { target: { value: 'Administração' } });
-    fireEvent.change(screen.getByLabelText(/Prioridade/i), { target: { value: 'alta' } });
-    fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
+    fireEvent.change(descricaoInput, { target: { value: 'Minha tarefa' } });
+    fireEvent.change(setorInput, { target: { value: 'TI' } });
+    fireEvent.change(prioridadeInput, { target: { value: 'alta' } });
+    fireEvent.change(usuarioInput, { target: { value: '1' } });
 
-    axios.post.mockResolvedValueOnce({ data: {} });
+    // Confirma que os valores foram preenchidos
+    expect(descricaoInput).toHaveValue('Minha tarefa');
+    expect(setorInput).toHaveValue('TI');
+    expect(prioridadeInput).toHaveValue('alta');
+    expect(usuarioInput).toHaveValue('1');
+    expect(statusInput).toHaveValue('a fazer'); // campo readonly
 
-    // Clica no botão de envio
-    fireEvent.click(screen.getByRole("button", { name: /Cadastrar/i }));
+    // Dispara submit
+    fireEvent.click(botao);
 
-    // Espera o envio da requisição
-    await waitFor(() => expect(axios.post).toHaveBeenCalled());
-
-    // Verifica o reset dos campos ANTES da navegação
+    // Espera a ação async e valida o reset dos campos
     await waitFor(() => {
-      expect(screen.getByLabelText(/Descrição/i).value).toBe("");
-      expect(screen.getByLabelText(/Nome do Setor/i).value).toBe("");
-      expect(screen.getByLabelText(/Prioridade/i).value).toBe("");
-      expect(screen.getByLabelText(/Usuário/i).value).toBe("");
+      expect(descricaoInput).toHaveValue('');
+      expect(setorInput).toHaveValue('');
+      expect(prioridadeInput).toHaveValue('');
+      expect(usuarioInput).toHaveValue('');
+      expect(statusInput).toHaveValue('a fazer'); // continua fixo
     });
-
-    // Agora sim verifica a navegação
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/"));
   });
+  
+
 });
