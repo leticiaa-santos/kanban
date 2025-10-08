@@ -3,18 +3,30 @@ import { beforeEach, describe, expect, vi } from 'vitest';
 import { CadTarefa } from '../Paginas/CadTarefa';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router-dom';
-import '@testing-library/jest-dom'
 
-vi.mock('axios'); // mocka o axios globalmente
+// Mocks
+vi.mock('axios');
+const mockNavigate = vi.fn();
 
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+// Evita alert real
+vi.spyOn(window, 'alert').mockImplementation(() => {});
 
 describe("Cadastro de Tarefas", () => {
 
   beforeEach(() => {
-    // Mock da requisição GET de usuários para popular o select
-    axios.get.mockResolvedValue({
-      data: [{ id: 1, nome: 'Usuário Teste' }]
-    });
+    vi.useFakeTimers(); // controla setTimeout
+    vi.clearAllMocks();
+
+    // Mock da requisição de usuários
+    axios.get.mockResolvedValue({ data: [{ id: 1, nome: 'Letícia' }] });
 
     render(
       <MemoryRouter>
@@ -40,42 +52,39 @@ describe("Cadastro de Tarefas", () => {
   });
 
 
-  it("Reseta os campos após submissão com sucesso", async () => {
-    // Mock da requisição POST para envio do formulário
-    axios.post.mockResolvedValue({ data: {} });
+  it('deve resetar os campos após submissão bem-sucedida e navegar', async () => {
+    // Preenche os campos obrigatórios
+    fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Fazer relatório semanal' } });
+    fireEvent.change(screen.getByLabelText(/Nome do Setor/i), { target: { value: 'Administração' } });
+    fireEvent.change(screen.getByLabelText(/Prioridade/i), { target: { value: 'alta' } });
+    fireEvent.change(screen.getByLabelText(/Usuário/i), { target: { value: '1' } });
 
-    const descricaoInput = screen.getByLabelText(/Descrição/i);
-    const setorInput = screen.getByLabelText(/Nome do Setor/i);
-    const prioridadeInput = screen.getByLabelText(/Prioridade/i);
-    const usuarioInput = screen.getByLabelText(/Usuário/i);
-    const statusInput = screen.getByLabelText(/Status/i);
-    const botao = screen.getByRole("button", { name: /Cadastrar/i });
+    // Mock da API
+    axios.post.mockResolvedValueOnce({ data: {} });
 
-    // Preenche os campos
-    fireEvent.change(descricaoInput, { target: { value: 'Minha tarefa' } });
-    fireEvent.change(setorInput, { target: { value: 'TI' } });
-    fireEvent.change(prioridadeInput, { target: { value: 'alta' } });
-    fireEvent.change(usuarioInput, { target: { value: '1' } });
+    // Submete o formulário
+    fireEvent.click(screen.getByRole('button', { name: /Cadastrar/i }));
 
-    // Confirma que os valores foram preenchidos
-    expect(descricaoInput).toHaveValue('Minha tarefa');
-    expect(setorInput).toHaveValue('TI');
-    expect(prioridadeInput).toHaveValue('alta');
-    expect(usuarioInput).toHaveValue('1');
-    expect(statusInput).toHaveValue('a fazer'); // campo readonly
+    // Espera chamada da API
+    await waitFor(() => expect(axios.post).toHaveBeenCalled());
 
-    // Dispara submit
-    fireEvent.click(botao);
-
-    // Espera a ação async e valida o reset dos campos
+    // Confere reset imediato dos campos
     await waitFor(() => {
-      expect(descricaoInput).toHaveValue('');
-      expect(setorInput).toHaveValue('');
-      expect(prioridadeInput).toHaveValue('');
-      expect(usuarioInput).toHaveValue('');
-      expect(statusInput).toHaveValue('a fazer'); // continua fixo
+      expect(screen.getByLabelText(/Descrição/i).value).toBe('');
+      expect(screen.getByLabelText(/Nome do Setor/i).value).toBe('');
+      expect(screen.getByLabelText(/Prioridade/i).value).toBe('');
+      expect(screen.getByLabelText(/Usuário/i).value).toBe('');
+      expect(screen.getByLabelText(/Status/i).value).toBe('a fazer');
     });
+
+    // ⏩ Roda timers pendentes (em vez de avançar manualmente)
+    vi.runOnlyPendingTimers();
+
+    // Aguarda navegação
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'));
+
+    // ✅ Volta pro relógio real
+    vi.useRealTimers();
   });
-  
 
 });
