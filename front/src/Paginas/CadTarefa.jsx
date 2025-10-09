@@ -1,9 +1,10 @@
+import React from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 
 const PRIORIDADE_CHOICES = ["baixa", "media", "alta"];
 
@@ -34,7 +35,6 @@ export function CadTarefa() {
     const [usuarios, setUsuarios] = useState([]);
     const [serverError, setServerError] = useState("");
     const [sucesso, setSucesso] = useState(false);
-    const navigate = useNavigate();
 
     const {
         register,
@@ -76,8 +76,7 @@ export function CadTarefa() {
         try {
             await axios.post("http://127.0.0.1:8000/api/tarefa/", data);
             setSucesso(true);
-            reset({ status: "a fazer" }); // mantém status fixo
-            setTimeout(() => navigate('/'), 1500);
+            reset(); // mantém status fixo
         } catch (error) {
             setServerError("Erro inesperado. Tente novamente.");
             console.log("Erro backend:", error);
